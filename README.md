@@ -55,7 +55,7 @@ And voilà, here we are!
 
 ## 2. Basic Branching and Merging
 
-Comme nous ne travailons jamais sur la branche master (main) sur Git, la première chose à faire est d'apprendre à créer une branche :
+Since we never work on the master (main) branch on Git, the first thing to do is learn how to create a branch:
 
 ```bash
 $ git checkout -b dev
@@ -65,9 +65,9 @@ $ git branch -a
   remotes/origin/master
 ```
 
-La commande `checkout -b` nous a non seulement créé une nouvelle branche, mais nous sommes également directement dessus.
+The `checkout -b` command not only created a new branch for us, but we are also directly on it.
 
-Apportons maintenant quelques modifications à notre code :
+Now let's make some changes to our code:
 
 ```bash
 $ echo -e "\nHello, world\n" >> README.md
@@ -79,7 +79,7 @@ On branch dev
 nothing to commit, working tree clean
 ```
 
-Une fois que notre travail est achevé sur cette branche, il est temps de faire un merge avec la branche master :
+Once our work is done on this branch, it's time to merge with the master branch:
 
 ```bash
 $ git checkout master
@@ -91,7 +91,7 @@ Fast-forward
  1 file changed, 3 insertions(+)
 ```
 
-Généralement, à ce stade, vous voulaiez également supprimer la branche sur laquelle vous avez travaillé :
+Usually at this point you also wanted to delete the branch you were working on:
 
 ```bash
 $ git branch -d dev
@@ -110,7 +110,7 @@ It's time to jump in without a net and give it a try!
 
 ## 4. Conflicts
 
-Testons maintenant le scénario suivant : un cherchant à régler deux problèmes différents, votre collègue et vous modifier par inadvertance une partie commune du code.
+Now let's test the following scenario: One seeking to fix two different problems, your colleague and you inadvertently modify a common part of the code.
 
 ```bash
 $ git checkout -b issue14
@@ -140,7 +140,7 @@ CONFLICT (content): Merge conflict in README.md
 Automatic merge failed; fix conflicts and then commit the result.
 ```
 
-Oups, il n'est pas possible de faire un merge de la branche issue15, car elle rentre en conflit avec la branche issue14 que nous avons merge un peu plus tôt.
+Oops, it is not possible to merge the issue15 branch, because it conflicts with the issue14 branch that we merged earlier.
 
 ```bash
 $ git status
@@ -157,9 +157,9 @@ Unmerged paths:
 no changes added to commit (use "git add" and/or "git commit -a")
 ```
 
-Comment faire ?
+How to do ?
 
-Git adds standard conflict-resolution markers to the files that have conflicts, so you can open them manually and resolve those conflicts :
+Git adds standard conflict-resolution markers to the files that have conflicts, so you can open them manually and resolve those conflicts:
 
 ```bash
 $ nano README.md
@@ -214,6 +214,127 @@ $ git branch -d issue15
 Deleted branch issue15 (was 67eb066).
 ```
 
-Faites attention, vous pourriez recevoir un diplôme en gestion de conflits ;-)
+Be careful, you might get a diploma in conflict management ;-)
 
-## 5. 
+## 5. A little exercise?
+
+Run the following command:
+
+```bash
+$ curl -sSL https://raw.githubusercontent.com/de13/git/main/scripts/conflicts.sh | sh -
+```
+
+You should now have a nice conflict:
+
+```bash
+$ git status
+On branch master
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+
+        both modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+It's your turn !
+
+## 6. Do and undo is always to work
+
+Here is the scenario: You are working on your code and creating a lot of new files. At the time of the commit, you forgot one!
+
+```bash
+$ touch file1 file2
+$ git add file1
+$ git commit -m "There are new files here!"
+[master 58ff1cf] There are new files here!
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 file1
+$ git status
+On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        file2
+
+nothing added to commit but untracked files present (use "git add" to track)
+```
+
+At this point, it would not be elegant to add with the new file, and make a new commit, because that would make a lot of noise in the history.
+
+Instead, you can use `--amend`:
+
+```bash
+$ git add file2
+$ git commit --amend
+[master 5127811] There are new files here!
+ Date: Thu Apr 8 14:06:01 2021 +0000
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 file1
+ create mode 100644 file2
+```
+
+The file will then be added to your previous commit.
+
+We can also imagine the reverse scenario: you added a file that you didn't want to add.
+
+```bash
+$ touch binary_file
+$ git add binary_file
+$ git status
+On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        new file:   binary_file
+```
+
+Don't panic:
+
+```bash
+$ git reset HEAD binary_file
+$ git status
+On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        binary_file
+
+nothing added to commit but untracked files present (use "git add" to track)
+```
+
+And there you have it, the file is no longer staged!
+
+It is also possible not to want to save your modifications, and to wish to return to the previous state of the file:
+
+```bash
+$ echo "Oops, I don't want to make this change" >> README.md
+$ git status
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+Again, don't worry, this is not the end!
+
+```bash
+$ tail -1 README.md 
+Oops, I don\'t want to make this change
+$ git checkout -- README.md 
+$ tail -1 README.md 
+Everything looks fine now
+```
+
+And that's it for the tour of the commands that will be most useful to you every day. If you want to learn more:
+
+- [Pro Git](https://git-scm.com/book/en/v2): Free online book
+- [Learn Git Branching](https://learngitbranching.js.org/): an interactive online tutorial
