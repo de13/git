@@ -98,7 +98,7 @@ $ git branch -d dev
 Deleted branch dev (was 2783feb).
 ```
 
-## 3. Faites le vous-même !
+## 3. Do it yourself!
 
 It's time to jump in without a net and give it a try!
 
